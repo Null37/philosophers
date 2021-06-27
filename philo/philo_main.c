@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/06/26 19:40:50 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/06/27 13:21:17 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,66 +78,64 @@ void	print_to(char *str, int n)
 
 void	my_sleep(int sleep)
 {
-	t_all *all;
-	long long	ms;
-	long long	mu;
-	//long long	to_time;
-	long long old_time;
-	long long new_time;
+	size_t	ms;
+	size_t	mu;
+	size_t old_time;
+	size_t new_time;
+    size_t new_slep;
 	struct timeval time;
-	all = all_t();
+    ms = 0;
+    mu = 0;
+    old_time = 0;
+    new_time = 0;
 	gettimeofday(&time, NULL);
-	ms = time.tv_sec * 1000000;
+	ms = time.tv_sec * 1000;
 	mu = time.tv_usec / 1000;
-	old_time = ms + mu;
-	usleep((sleep - 10) * 1000);
-	while (1)
+	old_time = mu + ms;
+    if (sleep > 10)
+        new_slep = sleep - 10;
+    else if (sleep == 5)
+        new_slep = sleep - 3;
+    else if (sleep < 5)
+        new_slep = 0;
+	usleep(new_slep * 1000);
+	while (new_time != sleep)
 	{
 		gettimeofday(&time, NULL);
-		ms = time.tv_sec * 1000000;
-    	mu = time.tv_usec / 1000;
-    	new_time = (ms + mu) - old_time;
-		if (new_time == sleep)
-			break;
+    	new_time = ((time.tv_usec / 1000) + (time.tv_sec * 1000)) - old_time;
 	}
-	
 }
+
+
 void *phil_test(void *arg)
 {
 	t_all *all;
 
 	all = all_t();
-	
+	pthread_mutex_t die;
+	pthread_mutex_init(&die, NULL);
+	struct timeval time;
+	gettimeofday(&time, NULL);
 	t_philo_data  *p = (t_philo_data*)arg;
-	// ;
-	// (*k)++;
-	// printf("from philo %d\n", *k);
-	
-	// pthread_mutex_unlock(&lock);
-	// usleep(700000);
-	
-	pthread_mutex_lock(&all->forks[p->id - 1]);
-	print_to("has taken a fork 1 ", p->id);
-	pthread_mutex_lock(&all->forks[(p->id) % all->number_philo]);
-	print_to("has taken a fork 2 ", p->id);
-	print_to("is etaing", p->id);
-	usleep(200);
-	print_to("is sleeping", p->id);
-	usleep(300);
-	pthread_mutex_unlock(&all->forks[p->id - 1]);
-	pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
-	print_to("is thinking", p->id);
-	// write(1, "eating\n", 7);
-
-	// printf("eating %d\n", *k);
-	
-	// i = 0;
-	// if (all->forks[i] == 1 && all->forks[i + 1] == 1)
+	// pthread_mutex_lock(&die);
+	int r = 0;
+	// while(crr - last <  all->time_to_die && ar5 < a)
 	// {
-	// 	all->forks[i] = 0;
-	// 	all->forks[i + 1] = 0;
+	// pthread_mutex_unlock(&die);
+		pthread_mutex_lock(&all->forks[p->id - 1]);
+		print_to("has taken a fork 1 ", p->id);
+		pthread_mutex_lock(&all->forks[(p->id) % all->number_philo]);
+		print_to("has taken a fork 2 ", p->id);
+		print_to("is etaing", p->id);
+		// lst-timeeat = urrent;
+		// a++;
+		my_sleep(all->time_to_eat);
+		pthread_mutex_unlock(&all->forks[p->id - 1]);
+		pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
+		print_to("is sleeping", p->id);
+		my_sleep(all->time_to_sleep);
+		print_to("is thinking", p->id);
 	// }
-	//pthread_mutex_unlock(&lock);
 	return NULL;
 }
 
@@ -159,8 +157,9 @@ int main(int ac, char *av[])
 	t_philo_data *ph_s;
 	all->number_philo = i;
 	ph_s = aloc_stuct(ph_s);
-	all->time_to_sleep = atoi(av[2]);
-	//all->time_to_eat = atoi(av[2]);
+	all->time_to_die = atoi(av[2]);
+	all->time_to_eat = atoi(av[3]);
+	all->time_to_sleep = atoi(av[4]);
 	all->forks = malloc(sizeof(pthread_mutex_t) * i);
 	pthread_mutex_init(&all->write_lock, NULL);
 	int j;

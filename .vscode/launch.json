@@ -8,8 +8,8 @@
             "type": "lldb",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceFolder}/philoo",
-            "args": ["3", "1"],
+            "program": "${workspaceFolder}/a.out",
+            "args": ["500", "1"],
             "cwd": "${workspaceFolder}"
         }
     ]
