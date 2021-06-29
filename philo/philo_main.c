@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/06/29 12:48:30 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/06/29 13:16:00 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,13 @@ void	my_sleep(int sleep)
     else if (sleep < 5)
         new_slep = 0;
 	usleep(new_slep * 1000);
-	while (new_time != sleep)
+	if (sleep > 0)
 	{
-		gettimeofday(&time, NULL);
-    	new_time = ((time.tv_usec / 1000) + (time.tv_sec * 1000)) - old_time;
+		while (new_time != sleep)
+		{
+			gettimeofday(&time, NULL);
+    		new_time = ((time.tv_usec / 1000) + (time.tv_sec * 1000)) - old_time;
+		}
 	}
 }
 
