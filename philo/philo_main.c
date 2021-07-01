@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/07/01 11:51:11 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/07/01 13:20:32 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ void *phil_test(void *arg)
 		// my_sleep(all->time_to_eat);
 		p->last_eat = get_in_mic();
 		print_to("is etaing", p->id);
+		p->eat_time++;
 		my_sleep(all->time_to_eat);
-		//p->eat_time++;
 		// gettimeofday(&time, NULL);
 		pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
 		pthread_mutex_unlock(&all->forks[p->id - 1]);
@@ -170,20 +170,20 @@ int wait_(t_philo_data *ph_s)
 	while (1)
 	{
 		int j = 0;
-		// var = 0;
+		var = 0;
 		while (j < all->number_philo)
 		{
-			if (get_in_mic() - ph_s[j].last_eat >= all->time_to_die * 1000)
+			if (get_in_mic() - ph_s[j].last_eat > all->time_to_die * 1000)
 			{
 				print_to("is dead", ph_s[j].id);
 				return (1);
 			}
-			// if (all->number_philo_must_eat > 0 && ph_s[j].eat_time >= all->number_philo_must_eat)
-			// 	var++;
+			if (all->number_philo_must_eat > 0 && ph_s[j].eat_time >= all->number_philo_must_eat)
+				var++;
 			j++;
 		}
-		// if (var == all->number_philo)
-		// 	return (1);
+		if (var == all->number_philo)
+		 	return (1);
 		usleep(100);
 	}
 	return (0);
@@ -223,13 +223,13 @@ int main(int ac, char *av[])
 	j = 0;
 	while(j < all->number_philo)
 	{
-		//ph_s[j].eat_time = 0;
+		ph_s[j].eat_time = 0;
 		ph_s[j].last_eat = get_in_mic();
 		pthread_create(&philo[j], NULL, phil_test, &ph_s[j]);
 		usleep(100);
 		j++;
 	}
-	if (wait_(ph_s))
+	if (wait_(ph_s) == 1)
 		return (1);
 	j = 0;
 	while(j < all->number_philo)
