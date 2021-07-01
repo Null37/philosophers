@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/07/01 11:47:46 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/07/01 11:51:11 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ long long get_in_mic()
 // 		ph->is_dead = 1;
 // 	return (1);
 // }
-void	ikhan(long long time)
+void	my_sleep(long long time)
 {
 	long long	microb;
 
@@ -139,13 +139,13 @@ void *phil_test(void *arg)
 		// my_sleep(all->time_to_eat);
 		p->last_eat = get_in_mic();
 		print_to("is etaing", p->id);
-		ikhan(all->time_to_eat);
+		my_sleep(all->time_to_eat);
 		//p->eat_time++;
 		// gettimeofday(&time, NULL);
 		pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
 		pthread_mutex_unlock(&all->forks[p->id - 1]);
 		print_to("is sleeping", p->id);
-		ikhan(all->time_to_sleep);
+		my_sleep(all->time_to_sleep);
 		print_to("is thinking", p->id);
 	}
 	return NULL;
@@ -206,14 +206,12 @@ int main(int ac, char *av[])
 	else
 		all->number_philo_must_eat = -1;
 	all->forks = malloc(sizeof(pthread_mutex_t) * i);
-
 	pthread_mutex_init(&all->write_lock, NULL);
 	int j;
 	j = 0;
-	while (j < all->number_philo )
+	while (j < all->number_philo)
 	{
 		ph_s[j].id = j + 1;
-		ph_s[j].number_philo = all->number_philo;
 		j++;
 	}
 	j = 0;
