@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/07/03 18:30:01 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/07/03 20:30:14 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,22 @@ void	 print_to(char *str, int n)
 	printf("%lld  %d %s\n", t, n, str);
 	pthread_mutex_unlock(&all->write_lock);
 }
+
+void	 print_exit(char *str, int n)
+{
+	t_all *all;
+
+	struct timeval time;
+	long long t;
+	all = all_t();
+	pthread_mutex_lock(&all->write_lock);
+	gettimeofday(&time, NULL);
+	t = (time.tv_usec / 1000) + (time.tv_sec * 1000);
+	printf("%lld  %d %s\n", t, n, str);
+	return ;
+	pthread_mutex_unlock(&all->write_lock);
+}
+
 long long get_in_mic()
 {
 	struct timeval time;
@@ -89,7 +105,8 @@ void	my_sleep(long long time)
 	long long	microb;
 
 	microb = get_in_mic();
-	usleep((time * 1000) - 1500);
+	long long r = time  - 60;
+	usleep(r * 1000);
 	while ((get_in_mic() - microb) < (time * 1000));
 }
 
@@ -102,17 +119,21 @@ void *philos(void *arg)
 	t_philo_data  *p = (t_philo_data*)arg;
 	while(1)
 	{
+		// if (get_in_mic() - p->last_eat > all->time_to_die * 1000)
+		// {
+		// 	break ;
+		// }
 		pthread_mutex_lock(&all->forks[p->id - 1]);
-		print_to("has taken a fork 1", p->id);
+		print_to("has taken a fork", p->id);
 		pthread_mutex_lock(&all->forks[(p->id) % all->number_philo]);
-		print_to("has taken a fork 2", p->id);
+		print_to("has taken a fork", p->id);
 		p->last_eat = get_in_mic();
-		print_to("is etaing", p->id);
 		p->eat_time++;
+		print_to("is eating", p->id);
 		my_sleep(all->time_to_eat);
+		print_to("is sleeping", p->id);
 		pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
 		pthread_mutex_unlock(&all->forks[p->id - 1]);
-		print_to("is sleeping", p->id);
 		my_sleep(all->time_to_sleep);
 		print_to("is thinking", p->id);
 	}
@@ -140,14 +161,15 @@ int wait_(t_philo_data *ph_s)
 		var = 0;
 		while (j < all->number_philo)
 		{
-			if (get_in_mic() - ph_s[j].last_eat > all->time_to_die * 1000)
+			if (get_in_mic() - ph_s[j].last_eat >= all->time_to_die * 1000)
 			{
-				print_to("is dead", ph_s[j].id);
+				print_exit("is dead", ph_s[j].id);
 				return (1);
 			}
 			if (all->number_philo_must_eat > 0 && ph_s[j].eat_time >= all->number_philo_must_eat)
 				var++;
 			j++;
+			//
 		}
 		if (var == all->number_philo)
 		 	return (1);
