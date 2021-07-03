@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 18:54:13 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/07/01 13:20:32 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/07/03 18:30:01 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	ft_putnbr_fd(int nbr, int fd)
 	}
 }
 
-void	print_to(char *str, int n)
+void	 print_to(char *str, int n)
 {
 	t_all *all;
 
@@ -72,13 +72,7 @@ void	print_to(char *str, int n)
 	pthread_mutex_lock(&all->write_lock);
 	gettimeofday(&time, NULL);
 	t = (time.tv_usec / 1000) + (time.tv_sec * 1000);
-	ft_putnbr_fd(t, 1);
-	ft_putstr_fd(" ", 1);
-	ft_putstr_fd("Philo ", 1);
-	ft_putnbr_fd(n, 1);
-	ft_putstr_fd(" ", 1);
-	ft_putstr_fd(str, 1);
-	ft_putstr_fd("\n", 1);
+	printf("%lld  %d %s\n", t, n, str);
 	pthread_mutex_unlock(&all->write_lock);
 }
 long long get_in_mic()
@@ -90,23 +84,6 @@ long long get_in_mic()
 	return (h);	
 }
 
-// long long curr()
-// {
-// 	struct timeval time;
-// 	gettimeofday(&time, NULL);
-// 	long long h = (time.tv_usec / 1000) + (time.tv_sec * 1000);
-// 	return (h);
-// }
-
-// int cond(t_philo_data *ph)
-// {
-// 	t_all *all;
-
-// 	all = all_t();
-// 	if (get_in_mic() - ph[j]->last_eat >= all->time_to_die * 1000)
-// 		ph->is_dead = 1;
-// 	return (1);
-// }
 void	my_sleep(long long time)
 {
 	long long	microb;
@@ -116,32 +93,23 @@ void	my_sleep(long long time)
 	while ((get_in_mic() - microb) < (time * 1000));
 }
 
-void *phil_test(void *arg)
+void *philos(void *arg)
 {
 	t_all *all;
 
 	all = all_t();
-	pthread_mutex_t die;
-	pthread_mutex_init(&die, NULL);
 	struct timeval time;
-	int last_timeeat;
-	gettimeofday(&time, NULL);
 	t_philo_data  *p = (t_philo_data*)arg;
-	// pthread_mutex_lock(&die);
-	int r = 0;
 	while(1)
 	{
-	// pthread_mutex_unlock(&die);
 		pthread_mutex_lock(&all->forks[p->id - 1]);
 		print_to("has taken a fork 1", p->id);
 		pthread_mutex_lock(&all->forks[(p->id) % all->number_philo]);
 		print_to("has taken a fork 2", p->id);
-		// my_sleep(all->time_to_eat);
 		p->last_eat = get_in_mic();
 		print_to("is etaing", p->id);
 		p->eat_time++;
 		my_sleep(all->time_to_eat);
-		// gettimeofday(&time, NULL);
 		pthread_mutex_unlock(&all->forks[(p->id) % all->number_philo]);
 		pthread_mutex_unlock(&all->forks[p->id - 1]);
 		print_to("is sleeping", p->id);
@@ -166,7 +134,6 @@ int wait_(t_philo_data *ph_s)
 	
 	all = all_t();
 	int var;
-	
 	while (1)
 	{
 		int j = 0;
@@ -225,11 +192,11 @@ int main(int ac, char *av[])
 	{
 		ph_s[j].eat_time = 0;
 		ph_s[j].last_eat = get_in_mic();
-		pthread_create(&philo[j], NULL, phil_test, &ph_s[j]);
+		pthread_create(&philo[j], NULL, philos, &ph_s[j]);
 		usleep(100);
 		j++;
 	}
-	if (wait_(ph_s) == 1)
+	if (wait_(ph_s))
 		return (1);
 	j = 0;
 	while(j < all->number_philo)
