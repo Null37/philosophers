@@ -6,7 +6,7 @@
 /*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/06/16 15:29:53 by ssamadi           #+#    #+#             */
-/*   Updated: 2021/07/01 11:46:47 by ssamadi          ###   ########.fr       */
+/*   Updated: 2021/07/04 14:50:00 by ssamadi          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ typedef struct s_philo
 	int eat_time;
 }	t_philo_data;
 
-
+long long	ft_my_atoi(const char *str);
+t_all		*all_t(void);
 #endif

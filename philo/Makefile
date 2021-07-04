@@ -6,7 +6,7 @@
 #    By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/16 15:29:57 by ssamadi           #+#    #+#              #
-#    Updated: 2021/06/27 12:02:55 by ssamadi          ###   ########.fr        #
+#    Updated: 2021/07/04 15:08:39 by ssamadi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,11 +20,11 @@ MAGENTA="\033[35m"
 CYAN="\033[36m"
 WHITE="\033[37m"
 
-NAME = philoo
+NAME = philo
 
-FLAGS = -g
+FLAGS = -Wall -Wextra -Werror 
 
-SRC = philo/philo_main.c
+SRC = philo_main.c my_atoi.c
 
 CC = gcc
 
