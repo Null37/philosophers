@@ -6,7 +6,7 @@
 #    By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/06/16 15:29:57 by ssamadi           #+#    #+#              #
-#    Updated: 2021/07/04 15:08:39 by ssamadi          ###   ########.fr        #
+#    Updated: 2021/07/04 17:30:06 by ssamadi          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ NAME = philo
 
 FLAGS = -Wall -Wextra -Werror 
 
-SRC = philo_main.c my_atoi.c
+SRC = philo_main.c my_atoi.c philo_tools.c threads.c errors.c
 
 CC = gcc
 

@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   my_atoi.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ssamadi <ssamadi@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/07/04 15:18:30 by ssamadi           #+#    #+#             */
+/*   Updated: 2021/07/04 15:18:35 by ssamadi          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "philo.h"
 
@@ -5,8 +16,8 @@ long long	ft_my_atoi(const char *str)
 {
 	long long		i;
 	long long		number;
-	int			sign;
-	int			l_counter;
+	int				sign;
+	int				l_counter;
 
 	l_counter = 0;
 	sign = 1;
